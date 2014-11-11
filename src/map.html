@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<?php include 'header.html'; ?>
+	<!--<link rel="stylesheet" href="css/map.css" type="text/css" />-->
+	<style>
+	div.tooltip {
+	  position: absolute;
+	  text-align: center;
+	  width: 80px;
+	  height: 22px;
+	  padding: 3px;
+	  font: 10px sans-serif;
+	  background: #ddd;
+	  border: solid 1px #aaa;
+	  border-radius: 6px;
+	  pointer-events: none;
+	  z-index:-1;
+	}
+	</style>
+    <!-- START CONTENT -->
+    <section class="container clearfix">
+		<!-- Page Title -->
+			<header class="container page_info clearfix">
+				<h1 class="regular brown bottom_line">Genetic map</h1>
+				<div class="clear"></div>
+			</header>
+		<!-- /Page Title -->
+
+		<div class="container">
+			Select Chromosome &nbsp; &nbsp; &nbsp;
+			<SELECT id="selCombo" SIZE=1> 
+				<OPTION VALUE selected ="">--- Select ---</OPTION>
+				<OPTION VALUE="1">CHR 1</OPTION>
+				<OPTION VALUE="2">CHR 2</OPTION>
+				<OPTION VALUE="3">CHR 3</OPTION>
+				<OPTION VALUE="4">CHR 4</OPTION> 
+				<OPTION VALUE="5">CHR 5</OPTION> 
+				<OPTION VALUE="6">CHR 6</OPTION>
+				<OPTION VALUE="7">CHR 7</OPTION>
+				<OPTION VALUE="8">CHR 8</OPTION>
+				<OPTION VALUE="9">CHR 9</OPTION> 
+				<OPTION VALUE="10">CHR 10</OPTION> 
+				<OPTION VALUE="11">CHR 11</OPTION> 
+				<OPTION VALUE="12">CHR 12</OPTION> 
+			</SELECT>
+			&nbsp; &nbsp; &nbsp; &nbsp;<a class="button blue" href="#" onclick="chr_select(document.getElementById('selCombo').value,'1');">Submit</a>
+			<script src="http://d3js.org/d3.v3.min.js"></script>
+			<script src="dmap.js"></script>
+			<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.27.1"></script>
+			<div id ="mire" width="100%"></div>
+
+			<script>
+				/*$(function() {
+					<?php 
+						if (isset($_GET['Chr']) & isset($_GET['marker'])) { ?>
+							var chr	= <?php ECHO $_GET['Chr'];?>;		
+							var markervalue = <?php ECHO $_GET['marker'];?>;
+							chr_select(chr,markervalue);
+						
+					<?php 
+						} elseif (isset($_GET['Chr']) ) {?>
+							var chr = <?php ECHO $_GET['Chr'];?>;
+							chr_select(chr,'');				
+					<?php } ?>
+					chr_select(1,'');
+				});	
+								
+			*/
+				var margin = {top: 100, right: 50, bottom: 100, left: 450}, //100
+					margin2 = {top: 100, right: 850, bottom: 100, left: 150},
+					margin0 = {top: 100, right: 10, bottom: 100, left: 50},
+					width = 1100 - margin0.left - margin0.right,
+					heightscreen = 700,
+					height = heightscreen - margin.top - margin.bottom,
+					height2 = heightscreen - margin2.top - margin2.bottom,
+					width2 = 1560 - margin2.left - margin2.right;
+
+				var parseGM = d3.time.format("%b %Y").parse;
+
+				var y = d3.scale.linear().range([0,height]),
+					y2 = d3.scale.linear().range([0,height2]), //scalay
+					x = d3.scale.linear().range([0,width]),
+					x2 = d3.scale.linear().range([0,10]); //mas delgado
+
+				var yAxis = d3.svg.axis().scale(y).orient("left").tickSize(1),
+					yAxis2 = d3.svg.axis().scale(y2).orient("left").tickSize(1),
+					xAxis = d3.svg.axis().scale(x).orient("bottom");
+
+				var vbrush = d3.svg.brush()
+					.y(y2)
+					.on("brush", brush);
+					
+				var svg = d3.select("#mire").append("svg")
+					.attr("width",  width + margin0.left + margin0.right)
+					.attr("height", height+ margin0.top + margin0.bottom);
+
+				svg.append("defs").append("clipPath")
+					.attr("id", "clip")
+				  .append("rect")
+					.attr("width", width)
+					.attr("height", height);
+
+				var focus = svg.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				var context = svg.append("g")
+					.attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+					
+					var div = d3.select("#mire").append("div")
+					.attr("class", "tooltip")
+					.style("opacity", 1e-6);
+					  
+				focus.attr("visibility", "hidden");
+				context.attr("visibility", "hidden");	
+				 
+				focus.append("rect")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("rx", 0)
+					.attr("ry", 0)
+					.attr("width", 75)
+					.attr("height", height)
+					.attr("fill",'#F2F7D2')	
+					.attr("stroke","black")
+					.attr("id","reglineT");		 
+				 
+				function chr_select(chr,markervalue){
+					focus.select("reglineT").attr("visibility", "hidden");
+					context.attr("visibility", "unhidden");
+					focus.selectAll("line").remove();
+					focus.selectAll("text").remove();
+					focus.select(".y.axis").remove();
+					context.selectAll("line").remove();
+					context.selectAll("text").remove();
+					context.select(".y.axis").remove();
+					context.selectAll("rect").remove();
+					context.select("g").remove();
+					context.selectAll("g").remove();
+					context.selectAll("polygon").remove();
+					
+					context.append("rect")
+						.attr("x", 0)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", 75)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					d3.json("json.json", function(data) {
+						data.forEach(function(d) {
+							d.GM = +d.GM; //parseGM(d.GM);
+						});
+						
+						var data = data.filter(function(d) {
+						return d.CHR == chr});  
+						
+						y.domain(d3.extent(data.map(function(d) { return d.GM; })));
+						x.domain([0, d3.max(data.map(function(d) { return d.GM; }))]);
+						y2.domain(y.domain());
+						x2.domain(x.domain());
+
+						valuemax  = d3.max(data, function(d) { return d.GM; });
+
+						context.append("g") // para 1 axis y
+							.attr("id","yaxis")
+							.attr("class", "y axis")
+							.attr("width", 1)
+							  .attr("height", 1)
+							.attr("transform", "translate(0,0)") // + width2 )
+							.call(yAxis2);
+							
+						context.selectAll("line.horizontal")
+							.data(data)
+							.enter().append("svg:line")
+							.attr("x1", 0)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", 75)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2);
+							
+						context.append("g")
+							.attr("id","brushid")
+							.attr("class", "brush")
+							.call(vbrush)
+							.selectAll("rect")
+							.attr("fill", "#E7D681")
+							.attr("width", 75);  
+						  
+						// Polygon for zoom
+						context.append("polygon")
+							.data(data)
+							.attr("fill", "#E7D681") //lightcoral
+							.attr('opacity', 0.125)
+							.style("stroke-width", 2);
+							  
+						// focus hidden when zoom is not available	  
+										   
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 0)
+							.attr("dy", -50)
+							.style("font-size", "9pt")
+							.text("Chromosome " + chr);	  
+							  
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 0)
+							.attr("dy", height+50)
+							.text("Select and brush an area for zoom");
+							  
+						focus.append("g")
+							.attr("class", "y axis")
+							.attr("transform", "translate(0,0)")
+							.call(yAxis);
+
+						// Draw markers in focus zone
+											
+						focus.selectAll("linehorizontal")
+							.data(data)
+							.enter().append("line")
+							.attr("class", "line")
+							.attr("x1", 0)  
+							.attr("y1", function(d) { return y2(d.GM); })
+							.attr("x2", 75)
+							.attr("y2", function(d) { return y2(d.GM); })
+							.style("stroke", function(d) { return d.color; })
+							.style("stroke-width", 2)
+							.on("mouseover", mouseoverx21)
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+
+						var a = 0, b=0;
+						focus.selectAll("text1")
+							.data(data)
+							.enter().append("text")
+							.attr("dx", function(d,i) {  if  (d.GM != a) { a = d.GM; b = 0; return 75;}  else {  b += 1; return 75+b*5;  } })
+							.on( "mouseover", mouseoverx21)
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+							  
+					<!--	<?php if (isset($_GET['marker'])) { ?>	
+						/*	context.select("brush").call(brush); 
+							focus.select("text1").call(mouseoverx2(data,markervalue));
+						<?php } ?>
+						-->*/
+					});
+
+					d3.json("json_qtl.json", function(data) {
+						if (data !== null) {
+							var dataq = data.filter(function(d) {
+								return d.GM1 != ''
+							}); 
+
+							// draw QTL
+								context.selectAll("line.vertical")
+									.data(dataq)
+									.enter().append("svg:line")
+									.attr("x1", function(d,i) { return 85+i*6; }) //array.indexOf("India") 100)
+									.attr("y1", function(d) { return y2(d.range.split('-')[0]); }) 
+									.attr("x2", function(d,i) { return 85+i*6; })
+									.attr("y2", function(d) { return y2(d.range.split('-')[1]); }) 
+									.style("stroke", "#203455")   
+									.style("stroke-width", 5)
+									.style("cursor","pointer")
+									.on("click", onclickqtlx2)			
+									.on("mouseover", mouseoverx)
+									.on("mousemove", mousemovex)
+									.on("mouseout", mouseoutx);
+									
+							// draw QTL
+						/*	context.selectAll("line.vertical")
+								.data(dataq)
+								.enter().append("svg:line")
+								.attr("x1", function(d,i) { return 85+i*5; }) //array.indexOf("India") 100)
+								.attr("y1", function(d) { return y2(d.GM); })
+								.attr("x2", function(d,i) { return 85+i*5; })
+								.attr("y2", function(d) { return y2(d.GM1); })
+								.style("stroke", "#203455")  
+								.style("stroke-width", 2)
+								//.on( "mouseover", mouseoverx2) 
+								.on("mouseout", mouseout)
+								.on("click", onclick);
+						
+						
+							// QTL names	  
+							context.selectAll("text1")
+								.data(dataq)
+								.enter().append("text")
+								.attr("dx", function(d,i) { return 85+i*5; })
+								.attr("dy", function(d) { return y2(d.GM); })
+								.text(function(d) { return d.qtl; }) 			//.style("text-anchor","middle") 
+								//  .on( "mouseover", mouseoverx2) 
+								.on("mouseout", mouseout)
+								.on("click", onclick);
+								
+							/*QTL  for zoom
+							focus.selectAll("line.vertical")
+								.data(dataq)
+								.enter().append("svg:line")
+								.attr("x1", 85)//function(d,i) { return 85+i*5; }) //array.indexOf("India") 100)
+								.attr("y1", 50)  //function(d) { return y2(d.GM); })
+								.attr("x2", 85)//function(d,i) { return 85+i*5; })
+								.attr("y2", 100) //function(d) { return y2(d.GM1); })		
+								.style("stroke", "#203455")  //function(d) { return d.color; }) 
+								.style("stroke-width", 2)
+								//.on( "mouseover", mouseoverx2) 
+								.on("mouseout", mouseout)
+								.on("click", onclick);
+						
+							// QTL names	  
+							focus.selectAll("text2")
+								.data(dataq)
+								.enter().append("text")
+								.attr("dx", function(d,i) { return 85+i*5; })
+								.attr("dy", function(d) { return y(d.GM); })
+								.text(function(d) { return d.qtl; }) 			//.style("text-anchor","middle") 
+								//.on( "mouseover", mouseoverx2) 
+								.on("mouseout", mouseout)
+								.on("click", onclick);*/
+						}
+					});
+				}
+			</script>
+		</div>
+						
+		<div class="clear padding30"></div>
+	</section>
+    <!-- END CONTENT -->
+
+		<?php include 'footer.html'; ?>
+</body>
+</html>
