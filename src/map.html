@@ -151,7 +151,7 @@
 						.attr("stroke","black")
 						.attr("id","reglineT");
 						 
-					d3.json("json.json", function(data) {
+					d3.csv("data.csv", function(data) {
 						data.forEach(function(d) {
 							d.GM = +d.GM; //parseGM(d.GM);
 						});
@@ -251,7 +251,7 @@
 						-->*/
 					});
 
-					d3.json("json_qtl.json", function(data) {
+					d3.csv("data_qtl.csv", function(data) {
 						if (data !== null) {
 							var dataq = data.filter(function(d) {
 								return d.GM1 != ''

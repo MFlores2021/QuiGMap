@@ -1,0 +1,6 @@
+qtl,CHR,LG,population,locality,range,peak,marker_interval,dart_markers_involved,dart_range,LOD,R2,dosage_effect,qtl_present,qtl_absent,random
+Eye depth,11,0,Diploid,,16.473-39.,32.545,to059,to37059,,0,0,,,,37
+Eye depth,10,0,Diploid,,5.857-39.3,27.955,p9063,pP063,,0,0,,,,38
+Eye depth,10,0,Diploid,,16.473-21.,21.097,sts12035,sts2035,,0,0,,,,39
+General shape,10,0,Diploid,,15.221-39.,27.955,p39063,pPt9063,,0,0,,,,40
+General shape,10,0,Diploid,,5.857-39.3,32.545,to59,to59,,0,0,,,,41
