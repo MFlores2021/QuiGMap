@@ -1,3 +1,172 @@
+  function chr_select(chr,markervalue){
+    
+      			svg.append("defs").append("clipPath")
+					.attr("id", "clip")
+				  .append("rect")
+					.attr("width", width)
+					.attr("height", height);
+          
+    
+      		  
+				focus.attr("visibility", "hidden");
+				context.attr("visibility", "hidden");	
+				 
+				focus.append("rect")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("rx", 0)
+					.attr("ry", 0)
+					.attr("width", 75)
+					.attr("height", height)
+					.attr("fill",'#F2F7D2')	
+					.attr("stroke","black")
+					.attr("id","reglineT");		
+          
+          
+					focus.select("reglineT").attr("visibility", "hidden");
+					context.attr("visibility", "unhidden");
+					focus.selectAll("line").remove();
+					focus.selectAll("text").remove();
+					focus.select(".y.axis").remove();
+					context.selectAll("line").remove();
+					context.selectAll("text").remove();
+					context.select(".y.axis").remove();
+					context.selectAll("rect").remove();
+					context.select("g").remove();
+					context.selectAll("g").remove();
+					context.selectAll("polygon").remove();
+					
+					context.append("rect")
+						.attr("x", 0)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", 75)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					d3.csv("data.csv", function(data) {
+						data.forEach(function(d) {
+							d.GM = +d.GM; //parseGM(d.GM);
+						});
+						
+						var data = data.filter(function(d) {
+						return d.CHR == chr});  
+						
+						y.domain(d3.extent(data.map(function(d) { return d.GM; })));
+						x.domain([0, d3.max(data.map(function(d) { return d.GM; }))]);
+						y2.domain(y.domain());
+						x2.domain(x.domain());
+
+						valuemax  = d3.max(data, function(d) { return d.GM; });
+
+						context.append("g") // para 1 axis y
+							.attr("id","yaxis")
+							.attr("class", "y axis")
+							.attr("width", 1)
+							  .attr("height", 1)
+							.attr("transform", "translate(0,0)") // + width2 )
+							.call(yAxis2);
+							
+						context.selectAll("line.horizontal")
+							.data(data)
+							.enter().append("svg:line")
+							.attr("x1", 0)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", 75)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2);
+							
+						context.append("g")
+							.attr("id","brushid")
+							.attr("class", "brush")
+							.call(vbrush)
+							.selectAll("rect")
+							.attr("fill", "#E7D681")
+							.attr("width", 75);  
+						  
+						// Polygon for zoom
+						context.append("polygon")
+							.data(data)
+							.attr("fill", "#E7D681") //lightcoral
+							.attr('opacity', 0.125)
+							.style("stroke-width", 2);
+							  
+						// focus hidden when zoom is not available	  
+										   
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 0)
+							.attr("dy", -50)
+							.style("font-size", "9pt")
+							.text("Chromosome " + chr);	  
+							  
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 0)
+							.attr("dy", height+50)
+							.text("Select and brush an area for zoom");
+							  
+						focus.append("g")
+							.attr("class", "y axis")
+							.attr("transform", "translate(0,0)")
+							.call(yAxis);
+
+						// Draw markers in focus zone
+											
+						focus.selectAll("linehorizontal")
+							.data(data)
+							.enter().append("line")
+							.attr("class", "line")
+							.attr("x1", 0)  
+							.attr("y1", function(d) { return y2(d.GM); })
+							.attr("x2", 75)
+							.attr("y2", function(d) { return y2(d.GM); })
+							.style("stroke", function(d) { return d.color; })
+							.style("stroke-width", 2)
+							.on("mouseover", mouseoverx21)
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+
+						var a = 0, b=0;
+						focus.selectAll("text1")
+							.data(data)
+							.enter().append("text")
+							.attr("dx", function(d,i) {  if  (d.GM != a) { a = d.GM; b = 0; return 75;}  else {  b += 1; return 75+b*5;  } })
+							.on( "mouseover", mouseoverx21)
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+					});
+
+					d3.csv("data_qtl.csv", function(data) {
+						if (data !== null) {
+							var dataq = data.filter(function(d) {
+								return d.GM1 != ''
+							}); 
+
+							// draw QTL
+								context.selectAll("line.vertical")
+									.data(dataq)
+									.enter().append("svg:line")
+									.attr("x1", function(d,i) { return 85+i*6; }) //array.indexOf("India") 100)
+									.attr("y1", function(d) { return y2(d.range.split('-')[0]); }) 
+									.attr("x2", function(d,i) { return 85+i*6; })
+									.attr("y2", function(d) { return y2(d.range.split('-')[1]); }) 
+									.style("stroke", "#203455")   
+									.style("stroke-width", 5)
+									.style("cursor","pointer")
+									.on("click", onclickqtlx2)			
+									.on("mouseover", mouseoverx)
+									.on("mousemove", mousemovex)
+									.on("mouseout", mouseoutx);
+												
+						}
+					});
+				}
+        
 function brush(){
 
 	d3.selectAll("text#popup").remove(); 

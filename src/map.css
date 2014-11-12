@@ -1,0 +1,43 @@
+svg {
+  font: 10px sans-serif;
+}
+
+path {
+  fill: steelblue;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+ stroke-width: 0);
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+.arc{
+            fill: pink;
+            stroke: red;
+        }
+.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+div.tooltip {
+	  position: absolute;
+	  text-align: center;
+	  width: 80px;
+	  height: 22px;
+	  padding: 3px;
+	  font: 10px sans-serif;
+	  background: #ddd;
+	  border: solid 1px #aaa;
+	  border-radius: 6px;
+	  pointer-events: none;
+	  z-index:-1;
+	}
