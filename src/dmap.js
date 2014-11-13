@@ -1,12 +1,11 @@
-  function chr_select(chr,markervalue){
+
+function chr_select(chr,markervalue,datamarkers,dataqtl){
     
-      			svg.append("defs").append("clipPath")
+      	svg.append("defs").append("clipPath")
 					.attr("id", "clip")
 				  .append("rect")
 					.attr("width", width)
-					.attr("height", height);
-          
-    
+					.attr("height", height);   
       		  
 				focus.attr("visibility", "hidden");
 				context.attr("visibility", "hidden");	
@@ -47,7 +46,7 @@
 						.attr("stroke","black")
 						.attr("id","reglineT");
 						 
-					d3.csv("data.csv", function(data) {
+					d3.csv(datamarkers, function(data) {
 						data.forEach(function(d) {
 							d.GM = +d.GM; //parseGM(d.GM);
 						});
@@ -141,7 +140,7 @@
 							.on("click", onclick);
 					});
 
-					d3.csv("data_qtl.csv", function(data) {
+					d3.csv(dataqtl, function(data) {
 						if (data !== null) {
 							var dataq = data.filter(function(d) {
 								return d.GM1 != ''
@@ -167,6 +166,306 @@
 					});
 				}
         
+function chr_selectx4(chr,markervalue){
+  
+      svg.append("defs").append("clipPath")
+  				.attr("id", "clip")
+					.append("rect")
+					.attr("width", width)
+					.attr("height", height);
+          
+    			focus.attr("visibility", "hidden");
+				context.attr("visibility", "hidden");	
+      
+				//Create zoomed region				 
+				focus.append("rect")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("rx", 0)
+					.attr("ry", 0)      
+					.attr("width", widthchr+10)
+					.attr("height", height)
+					.attr("fill",'lightcoral')
+					.attr("stroke","black")
+					.attr("id","reglineT");		
+          
+          
+  				//Clear previous objects
+					focus.attr("visibility", "unhidden");
+					context.attr("visibility", "unhidden");
+					focus.selectAll("line").remove();
+					focus.selectAll("text").remove();
+					focus.select(".y.axis").remove();
+					context.selectAll("line").remove();
+					context.selectAll("text").remove();
+					context.select(".y.axis").remove();
+					context.selectAll("rect").remove();
+					context.select("brush").remove();
+					context.select("brushid").remove();
+					context.selectAll("brush").remove();
+					context.selectAll("brushid").remove();
+					context.select("g").remove();
+					context.selectAll("g").remove();
+					context.selectAll("polygon").remove();
+
+					//Create alleles
+					context.append("rect")
+						.attr("x", 0)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", widthchr+25)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					context.append("rect")
+						.attr("x", space+margspace)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", widthchr)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					context.append("rect")
+						.attr("x", space*2+margspace)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", widthchr)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					context.append("rect")
+						.attr("x", space*3+margspace)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", widthchr)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					context.append("rect")
+						.attr("x", space*4+margspace)
+						.attr("y", -30)
+						.attr("rx", 80)
+						.attr("ry", 30)      
+						.attr("width", widthchr)
+						.attr("height", height + 60)
+						.attr("fill",'transparent')
+						.attr("stroke","black")
+						.attr("id","reglineT");
+						 
+					d3.csv("datax4.csv", function(data) {
+
+						data.forEach(function(d) {
+										d.GM = +d.GM; //parseGM(d.GM);
+						});
+						  
+						var data  = data.filter(function(d) {
+									return d.CHR == chr});  
+						var dataq = data.filter(function(d) {
+									return d.marker2 != ''}); 
+						var data1 = data.filter(function(d) {
+									return d.alelle == 1}); 
+						var data2 = data.filter(function(d) {
+									return d.alelle == 2}); 
+						var data3 = data.filter(function(d) {
+									return d.alelle == 3}); 
+						var data4 = data.filter(function(d) {
+									return d.alelle == 4}); 
+							
+						y.domain(d3.extent(data.map(function(d) { return d.GM; })));
+						x.domain([0, d3.max(data.map(function(d) { return d.GM; }))]);
+						y2.domain(y.domain());
+						x2.domain(x.domain());
+						  
+						valuemax  = d3.max(data, function(d) { return d.GM; });
+
+						//overall
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 20)
+							.attr("dy", -40)
+							.text("Overall");
+							  
+						context.append("g") // para 1 axis y
+							.attr("id","yaxis")
+							.attr("class", "y axis")
+							.attr("transform", "translate(0,0)") // width2 
+							.call(yAxis2);
+							  
+						//C1
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", space+margspace+15)
+							.attr("dy", -40)
+							.text("C1");		  
+
+						//C2
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", space*2+margspace+15)
+							.attr("dy", -40)
+							.text("C2");
+
+						//C3
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", space*3+margspace+15)
+							.attr("dy", -40)
+							.text("C3");
+							  
+						//C4
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", space*4+margspace+15)
+							.attr("dy", -40)
+							.text("C4");		  
+						
+						//draw markers
+						context.selectAll("line.horizontal")
+							.data(data)
+							.enter().append("svg:line")
+							.attr("x1", 0)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", widthchr+25)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2);		
+						
+						context.selectAll("line.horizontal")
+							.data(data1)
+							.enter().append("svg:line")
+							.attr("x1", space+margspace)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", space+margspace+widthchr)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2);
+							
+						context.selectAll("line.horizontal")
+							.data(data2)
+							.enter().append("svg:line")
+							.attr("x1", space*2+margspace)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", space*2+margspace+widthchr)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2);
+							
+						context.selectAll("line.horizontal")
+							.data(data3)
+							.enter().append("svg:line")
+							.attr("x1", space*3+margspace)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", space*3+margspace+widthchr)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; })
+							.style("stroke-width", 2);
+							
+						context.selectAll("line.horizontal")
+							.data(data4) 
+							.enter().append("svg:line")
+							.attr("x1", space*4+margspace)
+							.attr("y1", function(d) { return y(d.GM); })
+							.attr("x2", space*4+margspace+widthchr)
+							.attr("y2", function(d) { return y(d.GM); })
+							.style("stroke", function(d) { return d.color; })
+							.style("stroke-width", 2);
+							
+						//For brush			  
+						context.append("g")
+							.attr("id","brushid")
+							.attr("class", "brush")
+							.call(brush)
+							.selectAll("rect")
+							.attr("fill", "lightcoral")
+							.attr("width", widthchr+25); 
+							  
+						//Polygon for zoom
+						context.append("polygon")
+							.data(data)
+							.attr("fill", "lightcoral")
+							.attr('opacity', 0.125)
+							.style("stroke-width", 2);
+							  
+						//focus hidden when zoom is not available	  
+						focus.attr("visibility", "hidden");
+						  
+						context.append("text")
+							.attr("id", "text-select")
+							.attr("dx", 0)
+							.attr("dy", height+50)
+							.text("Select and brush an area for zoom");
+						
+						//Draw axis in focus zone	
+						focus.append("g")
+							.attr("class", "y axis")
+							.attr("transform", "translate(0,0)")
+							.call(yAxis);
+
+						//Draw markers in focus zone
+						focus.selectAll("linehorizontal")
+							.data(data)
+							.enter().append("line")
+							.attr("class", "line")
+							.attr("x1", 0)  
+							.attr("y1", function(d) { return y2(d.GM); })
+							.attr("x2", widthchr+10)
+							.attr("y2", function(d) { return y2(d.GM); })
+							.style("stroke", function(d) { return d.color; }) 
+							.style("stroke-width", 2)	
+							.on( "mouseover", mouseover) 
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+
+						//Text for marker in zoomed zone	
+						focus.selectAll("text1")
+							.data(data)
+							.enter().append("text")
+							.attr("dx", widthchr+10)
+							.on( "mouseover", mouseoverx21)
+							.on("mouseout", mouseout)
+							.on("click", onclick);
+							  
+						
+						//Select QTLs
+						d3.csv("data_qtlx4.csv", function(dataqtl) {
+							if (dataqtl !== null) {
+								var dataq = dataqtl.filter(function(d) {
+									return d.trait_name != ''
+								}); 
+									
+								// draw QTL
+								context.selectAll("line.vertical")
+									.data(dataq)
+									.enter().append("svg:line")
+									.attr("x1", function(d,i) { return 85+i*6; }) //array.indexOf("India") 100)
+									.attr("y1", function(d) { return y2(d.range.split('-')[0]); }) 
+									.attr("x2", function(d,i) { return 85+i*6; })
+									.attr("y2", function(d) { return y2(d.range.split('-')[1]); }) 
+									.style("stroke", "#203455")   
+									.style("stroke-width", 5)
+									.style("cursor","pointer")
+									.on("click", onclickqtl)			
+									.on("mouseover", mouseoverx)
+									.on("mousemove", mousemovex)
+									.on("mouseout", mouseoutx);								
+
+							}
+						});
+					});
+				}
+
 function brush(){
 
 	d3.selectAll("text#popup").remove(); 
@@ -181,11 +480,11 @@ function brush(){
 		 
 	// brush zoom polygon 
 	ydomain = y.domain();	  
-    constant = heightscreen/(valuemax*1.4);
+  constant = heightscreen/(valuemax*1.4);
 	
 	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " "+ (margin.left-151) + "," + height + " "+ (margin.left-151) + ",0 ")
 	focus.select(".y.axis").call(yAxis); 
-  	focus.attr("visibility", "unhidden");
+  focus.attr("visibility", "unhidden");
 	    
 }
 
@@ -201,7 +500,7 @@ function brushx4(){
 	   
 	// brush zoom polygon 
 	ydomain = y.domain();
-    constant = heightscreen/(valuemax*1.4);
+  constant = heightscreen/(valuemax*1.4);
 	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " 525," + (d3.max(ydomain)*constant) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant) + " ")
     focus.select(".y.axis").call(yAxis); 
   	focus.attr("visibility", "unhidden");	    
