@@ -20,10 +20,11 @@ function chr_select(chr,markervalue,datamarkers,dataqtl){
 					.attr("height", height)
 					.attr("fill",'#F2F7D2')	
 					.attr("stroke","black")
-					.attr("id","reglineT");		
+					.attr("id","reglineTx2");		
           
           
-					focus.select("reglineT").attr("visibility", "hidden");
+					focus.select("reglineTx2").attr("visibility", "hidden");
+          focus.select("reglineTx2").remove();
 					context.attr("visibility", "unhidden");
 					focus.selectAll("line").remove();
 					focus.selectAll("text").remove();
@@ -45,7 +46,7 @@ function chr_select(chr,markervalue,datamarkers,dataqtl){
 						.attr("height", height + 60)
 						.attr("fill",'transparent')
 						.attr("stroke","black")
-						.attr("id","reglineT");
+						.attr("id","reglineTx2");
 						 
 					d3.csv(datamarkers, function(data) {
 						data.forEach(function(d) {
@@ -188,16 +189,17 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 					.attr("y", 0)
 					.attr("rx", 0)
 					.attr("ry", 0)      
-					.attr("width", widthchr+10)
+					.attr("width", 75) 
 					.attr("height", height)
 					.attr("fill",'lightcoral')
 					.attr("stroke","black")
-					.attr("id","reglineT");		
+					.attr("id","reglineTx4");		
           
           
   				//Clear previous objects
-          focus.select("reglineT").attr("visibility", "hidden");
-          focus.select("reglineT").remove();
+          focus.select("reglineTx4").attr("visibility", "hidden");
+          focus.select("reglineTx4").remove();
+          focus.select("reglineTx2").remove();
 					focus.attr("visibility", "unhidden");
 					context.attr("visibility", "unhidden");
 					focus.selectAll("line").remove();
@@ -427,7 +429,7 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 							.attr("class", "line")
 							.attr("x1", 0)  
 							.attr("y1", function(d) { return y2(d.GM); })
-							.attr("x2", widthchr+10)
+							.attr("x2",  75) 
 							.attr("y2", function(d) { return y2(d.GM); })
 							.style("stroke", function(d) { return d.color; }) 
 							.style("stroke-width", 2)	
@@ -439,7 +441,7 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 						focus.selectAll("text1")
 							.data(data)
 							.enter().append("text")
-							.attr("dx", widthchr+10)
+							.attr("dx", 75)
 							.on( "mouseover", mouseoverx21)
 							.on("mouseout", mouseout)
 							.on("click", onclick);
@@ -490,9 +492,9 @@ function brush(){
 		 
 	// brush zoom polygon 
 	ydomain = y.domain();	  
-  constant = height/valuemax; //5.92; //heightscreen/(valuemax*1.4);
+  constant = height/valuemax; 
 	
-	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " "+ (margin.left-151) + "," + height + " "+ (margin.left-151) + ",0 ")
+	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " "+ (margin.left-50) + "," + height + " "+ (margin.left-50) + ",0 ")
 	focus.select(".y.axis").call(yAxis); 
   focus.attr("visibility", "unhidden");
 	    
@@ -513,7 +515,7 @@ function brushx4(){
 
    constant = height/valuemax;
 
-	context.selectAll("polygon").attr("points", "75," + ((d3.min(ydomain))*constant) + " 75," + (d3.max(ydomain)*constant) + " 525," + (d3.max(ydomain)*constant) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant) + " ")
+	context.selectAll("polygon").attr("points", "75," + ((d3.min(ydomain))*constant) + " 75," + (d3.max(ydomain)*constant) + " 525," + (d3.max(ydomain)*constant) + " "+ (margin.left-53) + "," + height + " "+ (margin.left-53) + ",0 525," + (d3.min(ydomain)*constant) + " ")
     focus.select(".y.axis").call(yAxis); 
   	focus.attr("visibility", "unhidden");	       
 }
@@ -633,7 +635,7 @@ function mouseoverx2(d,markervalue) {
 }
 	
 function onclickqtl(d) {
- focus.select("reglineT").remove();
+ focus.select("reglineTx2").remove();
 	context.select("brush").remove(); 
 	context.select("brush").call(pbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
 	context.select("brush").call(brushx4); 
@@ -787,7 +789,7 @@ function onclickqtl(d) {
 
 function onclickqtlx2(d) {
 	context.select("brush").remove(); 
-	context.select("brush").call(vbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
+  context.select("brush").call(vbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
 	context.select("brush").call(brush); 
 	d3.selectAll("text#popup").remove(); 
 	focus.attr("visibility", "unhidden");
@@ -1114,8 +1116,8 @@ function mouseoverx() {
 
 function mousemovex(d,i){ 
 	div.text(d.qtl)
-	  .style("left", (450 + i*6)+ "px") 
-	  .style("top",  (y2(d.range.split('-')[1])+400) + "px"); 
+	  .style("left", (180 + i*6)+ "px") 
+	  .style("top",  (y2(d.range.split('-')[1])) + "px"); 
 	  /* .style("left", (150+i*6)+ "px") 
 	  .style("top",  (y2(d.range.split('-')[1])+90) + "px"); */
 }
@@ -1137,7 +1139,7 @@ function moveToFront() {
 }
   
 function onclick(d) {
-	window.open("http://hpc.cip.cgiar.org/bioinformatics/JBrowse/?loc=chr0"+ d.CHR +":"+d.H_START+".."+d.H_END); 
+	window.open("http://JBrowse/?loc=chr0"+ d.CHR +":"+d.H_START+".."+d.H_END); 
 	return false; 
 }
 	
