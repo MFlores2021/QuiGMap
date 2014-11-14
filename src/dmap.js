@@ -1,6 +1,7 @@
 
 function chr_select(chr,markervalue,datamarkers,dataqtl){
-    
+
+          
       	svg.append("defs").append("clipPath")
 					.attr("id", "clip")
 				  .append("rect")
@@ -145,6 +146,10 @@ function chr_select(chr,markervalue,datamarkers,dataqtl){
 							var dataq = data.filter(function(d) {
 								return d.GM1 != ''
 							}); 
+             
+             dataq = data.filter(function(d) {
+    							return d.CHR == chr
+								}); 
 
 							// draw QTL
 								context.selectAll("line.vertical")
@@ -166,9 +171,9 @@ function chr_select(chr,markervalue,datamarkers,dataqtl){
 					});
 				}
         
-function chr_selectx4(chr,markervalue){
+function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
   
-      svg.append("defs").append("clipPath")
+    svg.append("defs").append("clipPath")
   				.attr("id", "clip")
 					.append("rect")
 					.attr("width", width)
@@ -176,7 +181,7 @@ function chr_selectx4(chr,markervalue){
           
     			focus.attr("visibility", "hidden");
 				context.attr("visibility", "hidden");	
-      
+			
 				//Create zoomed region				 
 				focus.append("rect")
 					.attr("x", 0)
@@ -191,6 +196,7 @@ function chr_selectx4(chr,markervalue){
           
           
   				//Clear previous objects
+          focus.select("reglineT").attr("visibility", "hidden");
 					focus.attr("visibility", "unhidden");
 					context.attr("visibility", "unhidden");
 					focus.selectAll("line").remove();
@@ -264,7 +270,7 @@ function chr_selectx4(chr,markervalue){
 						.attr("stroke","black")
 						.attr("id","reglineT");
 						 
-					d3.csv("datax4.csv", function(data) {
+					d3.csv(datamarkers, function(data) {
 
 						data.forEach(function(d) {
 										d.GM = +d.GM; //parseGM(d.GM);
@@ -386,7 +392,7 @@ function chr_selectx4(chr,markervalue){
 						context.append("g")
 							.attr("id","brushid")
 							.attr("class", "brush")
-							.call(brush)
+							.call(pbrush)
 							.selectAll("rect")
 							.attr("fill", "lightcoral")
 							.attr("width", widthchr+25); 
@@ -439,10 +445,13 @@ function chr_selectx4(chr,markervalue){
 							  
 						
 						//Select QTLs
-						d3.csv("data_qtlx4.csv", function(dataqtl) {
+						d3.csv(dataqtl, function(dataqtl) {
 							if (dataqtl !== null) {
 								var dataq = dataqtl.filter(function(d) {
 									return d.trait_name != ''
+								}); 
+                dataq = dataqtl.filter(function(d) {
+  								return d.CHR == chr
 								}); 
 									
 								// draw QTL
@@ -491,7 +500,7 @@ function brush(){
 function brushx4(){
 
 	d3.selectAll("text#popup").remove(); 
-	y.domain(brush.empty() ? y2.domain() : brush.extent()); 
+	y.domain(pbrush.empty() ? y2.domain() : pbrush.extent()); 
 	
 	//select item zoomed
 	focus.selectAll("text").attr("dy", function(d) { return y(d.GM); }).text(function(d) { if (y(d.GM)>-2 & y(d.GM)<height)  return d.name; });
@@ -500,10 +509,12 @@ function brushx4(){
 	   
 	// brush zoom polygon 
 	ydomain = y.domain();
-  constant = heightscreen/(valuemax*1.4);
-	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " 525," + (d3.max(ydomain)*constant) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant) + " ")
+ // constant = ((height)/(valuemax));
+   constant = 5.9;
+  //alert(constant);
+	context.selectAll("polygon").attr("points", "75," + ((d3.min(ydomain))*constant-88) + " 75," + (d3.max(ydomain)*constant-88) + " 525," + (d3.max(ydomain)*constant-88) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant-88) + " ")
     focus.select(".y.axis").call(yAxis); 
-  	focus.attr("visibility", "unhidden");	    
+  	focus.attr("visibility", "unhidden");	       
 }
 
 function mouseover(d) {
@@ -621,8 +632,9 @@ function mouseoverx2(d,markervalue) {
 }
 	
 function onclickqtl(d) {
+ // alert(d.range.split('-')[0]);
 	context.select("brush").remove(); 
-	context.select("brush").call(brush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
+	context.select("brush").call(pbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
 	context.select("brush").call(brushx4); 
 	d3.selectAll("text#popup").remove(); 
 	focus.attr("visibility", "unhidden");
