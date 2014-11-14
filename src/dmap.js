@@ -197,6 +197,7 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
           
   				//Clear previous objects
           focus.select("reglineT").attr("visibility", "hidden");
+          focus.select("reglineT").remove();
 					focus.attr("visibility", "unhidden");
 					context.attr("visibility", "unhidden");
 					focus.selectAll("line").remove();
@@ -489,7 +490,7 @@ function brush(){
 		 
 	// brush zoom polygon 
 	ydomain = y.domain();	  
-  constant = heightscreen/(valuemax*1.4);
+  constant = height/valuemax; //5.92; //heightscreen/(valuemax*1.4);
 	
 	context.selectAll("polygon").attr("points", "75," + (d3.min(ydomain)*constant) + " 75," + (d3.max(ydomain)*constant) + " "+ (margin.left-151) + "," + height + " "+ (margin.left-151) + ",0 ")
 	focus.select(".y.axis").call(yAxis); 
@@ -509,10 +510,10 @@ function brushx4(){
 	   
 	// brush zoom polygon 
 	ydomain = y.domain();
- // constant = ((height)/(valuemax));
-   constant = 5.9;
-  //alert(constant);
-	context.selectAll("polygon").attr("points", "75," + ((d3.min(ydomain))*constant-88) + " 75," + (d3.max(ydomain)*constant-88) + " 525," + (d3.max(ydomain)*constant-88) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant-88) + " ")
+
+   constant = height/valuemax;
+
+	context.selectAll("polygon").attr("points", "75," + ((d3.min(ydomain))*constant) + " 75," + (d3.max(ydomain)*constant) + " 525," + (d3.max(ydomain)*constant) + " "+ (margin.left-61) + "," + height + " "+ (margin.left-61) + ",0 525," + (d3.min(ydomain)*constant) + " ")
     focus.select(".y.axis").call(yAxis); 
   	focus.attr("visibility", "unhidden");	       
 }
@@ -632,7 +633,7 @@ function mouseoverx2(d,markervalue) {
 }
 	
 function onclickqtl(d) {
- // alert(d.range.split('-')[0]);
+ focus.select("reglineT").remove();
 	context.select("brush").remove(); 
 	context.select("brush").call(pbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
 	context.select("brush").call(brushx4); 
