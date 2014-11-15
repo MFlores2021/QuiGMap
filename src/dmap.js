@@ -12,7 +12,11 @@
 
 
 function chr_select(chr,markervalue,datamarkers,dataqtl){
-
+context.select("brush").remove();
+  						context.select("brushid").remove();
+							context.selectAll("brush").remove();
+							context.selectAll("brushid").remove();
+              
           
       	svg.append("defs").append("clipPath")
 					.attr("id", "clip")
@@ -185,7 +189,11 @@ function chr_select(chr,markervalue,datamarkers,dataqtl){
 				}
         
 function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
-  
+  context.select("brush").remove();
+  						context.select("brushid").remove();
+							context.selectAll("brush").remove();
+							context.selectAll("brushid").remove();
+              
     svg.append("defs").append("clipPath")
   				.attr("id", "clip")
 					.append("rect")
@@ -221,10 +229,7 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 					context.selectAll("text").remove();
 					context.select(".y.axis").remove();
 					context.selectAll("rect").remove();
-					context.select("brush").remove();
-					context.select("brushid").remove();
-					context.selectAll("brush").remove();
-					context.selectAll("brushid").remove();
+
 					context.select("g").remove();
 					context.selectAll("g").remove();
 					context.selectAll("polygon").remove();
@@ -797,10 +802,13 @@ function onclickqtl(d) {
 		.attr("fill", "black")
 		.style("font-size", "12pt")
         .text("QTL absent: " + d.qtl_absent ); 		
+        
+        
 }
 
 function onclickqtlx2(d) {
-	context.select("brush").remove(); 
+	focus.select("reglineTx2").remove();
+  context.select("brush").remove(); 
   context.select("brush").call(vbrush.extent([d.range.split('-')[0],d.range.split('-')[1]]));
 	context.select("brush").call(brush); 
 	d3.selectAll("text#popup").remove(); 
@@ -955,7 +963,7 @@ function onclickqtlx2(d) {
 function loadqtl(d,qtlselected) {
 
 	focus.attr("visibility", "unhidden");  
-	context.select("brush").call(brush); 
+//	context.select("brush").call(brush); 
 	d3.selectAll("text#popup").remove(); 	
 
 	posx = 180,
