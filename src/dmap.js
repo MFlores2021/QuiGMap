@@ -1,3 +1,15 @@
+//////////////////////////////////////////////////////////
+//
+// Dmap 1.0
+//
+// Author: Mirella Flores
+// Copyright: International Potato Center 
+// License: MIT  
+// Contains functions to display genetic maps using D3.js 
+// as a backend.
+//
+//////////////////////////////////////////////////////////
+
 
 function chr_select(chr,markervalue,datamarkers,dataqtl){
 
