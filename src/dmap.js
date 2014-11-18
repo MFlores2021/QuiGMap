@@ -1140,7 +1140,7 @@ function mouseoverx() {
 
 function mousemovex(d,i){ 
 	div.text(d.qtl)
-	  .style("left", (180 + i*6)+ "px") 
+	  .style("left", (400 + i*6)+ "px") 
 	  .style("top",  (y2(d.range.split('-')[1])) + "px"); 
 }
 
