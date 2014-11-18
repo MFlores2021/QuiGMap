@@ -1,4 +1,4 @@
-qtl,CHR,LG,population,locality,range,peak,marker_interval,dart_markers_involved,dart_range,LOD,R2,dosage_effect,qtl_present,qtl_absent,random
+3,CHR,LG,population,locality,range,peak,marker_interval,dart_markers_involved,dart_range,LOD,R2,dosage_effect,qtl_present,qtl_absent,random
 Trait 1,1,0,Tetraploid,lima,67-82,74,459368_649992,"537683, 657053, 558941, 459368, 470960,651691, 650922, 538916, 649992",49-82,3.39,11.71,"Simplex, dominant",78.86 (2.36),65.14 (2.31),10
 Trait 2,2,0,Tetraploid,quito,13-40,4,437033_439071,"437033, 439071, 470742, 473085",7-Apr,2.54,9.46,"Simplex, dominant",21.37 (0.55),24.14(0.57),11
 Trait 3,3,0,Tetraploid,quito,40-84,92,538350_470764,"538350, 470764, 657358",90-95,2.46,11.4,"Simplex, dominant",23.8 (0.60),20.63 (0.58),12

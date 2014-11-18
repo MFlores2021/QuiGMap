@@ -16,6 +16,7 @@
 
 
 function chr_select(chr,markervalue,datamarkers,dataqtl){
+
 context.select("brush").remove();
     					context.select("brushid").remove();
 							context.selectAll("brush").remove();
@@ -70,7 +71,7 @@ context.select("brush").remove();
 						 
 					d3.csv(datamarkers, function(data) {
 						data.forEach(function(d) {
-							d.GM = +d.GM; //parseGM(d.GM);
+							d.GM = +d.GM; 
 						});
 						
 						var data = data.filter(function(d) {
@@ -83,12 +84,12 @@ context.select("brush").remove();
 
 						valuemax  = d3.max(data, function(d) { return d.GM; });
 
-						context.append("g") // para 1 axis y
+						context.append("g") 
 							.attr("id","yaxis")
 							.attr("class", "y axis")
 							.attr("width", 1)
 							  .attr("height", 1)
-							.attr("transform", "translate(0,0)") // + width2 )
+							.attr("transform", "translate(0,0)") 
 							.call(yAxis2);
 							
 						context.selectAll("line.horizontal")
@@ -112,7 +113,7 @@ context.select("brush").remove();
 						// Polygon for zoom
 						context.append("polygon")
 							.data(data)
-							.attr("fill", "#E7D681") //lightcoral
+							.attr("fill", "#E7D681") 
 							.attr('opacity', 0.125)
 							.style("stroke-width", 2);
 							  
@@ -176,7 +177,7 @@ context.select("brush").remove();
 								context.selectAll("line.vertical")
 									.data(dataq)
 									.enter().append("svg:line")
-									.attr("x1", function(d,i) { return 85+i*6; }) //array.indexOf("India") 100)
+									.attr("x1", function(d,i) { return 85+i*6; }) 
 									.attr("y1", function(d) { return y2(d.range.split('-')[0]); }) 
 									.attr("x2", function(d,i) { return 85+i*6; })
 									.attr("y2", function(d) { return y2(d.range.split('-')[1]); }) 
@@ -297,7 +298,7 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 					d3.csv(datamarkers, function(data) {
 
 						data.forEach(function(d) {
-										d.GM = +d.GM; //parseGM(d.GM);
+										d.GM = +d.GM; 
 						});
 						  
 						var data  = data.filter(function(d) {
@@ -327,10 +328,10 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 							.attr("dy", -40)
 							.text("Overall");
 							  
-						context.append("g") // para 1 axis y
+						context.append("g") 
 							.attr("id","yaxis")
 							.attr("class", "y axis")
-							.attr("transform", "translate(0,0)") // width2 
+							.attr("transform", "translate(0,0)") 
 							.call(yAxis2);
 							  
 						//C1
@@ -587,13 +588,13 @@ function mouseoverx21(d) {
         .text("Protocol: " + d.name ); 
 		 
 	focus.append("svg:a")
-		.attr("xlink:href", "http://hpc.cip.cgiar.org/bioinformatics/JBrowse/?loc=chr0"+ d.CHR +":"+d.H_START+".."+d.H_END)
+		.attr("xlink:href", "http://JBrowse/?loc=chr0"+ d.CHR +":"+d.H_START+".."+d.H_END)
         .append("svg:text").attr("x", 250)
         .attr("y", 150)
 		.attr("id", "popup")
 		.attr("fill", "blue")
 		.style("font-size", "12pt")
-		.text("View on Genome Browser");
+		.text("View on JBrowse");
 }
   
 function mouseoverx2(d,markervalue) {
@@ -646,13 +647,13 @@ function mouseoverx2(d,markervalue) {
 		.text( function(d) { return "Protocol    : " + d.name; });  
 		
 	focus.append("svg:a")
-		.attr("xlink:href", "http://hpc.cip.cgiar.org/bioinformatics/JBrowse/?loc="+d.SCAFF_ID+":"+d.H_START+".."+d.H_END)
+		.attr("xlink:href", "http://JBrowse/?loc="+d.SCAFF_ID+":"+d.H_START+".."+d.H_END)
 		.append("svg:text").attr("x", 250)
 		.attr("y", 180)
 		.attr("id", "popup")
 		.attr("fill", "blue") 
 		.style("font-size", "12pt")
-		.text("View on Genome Browser");
+		.text("View on JBrowse");
 }
 	
 function onclickqtl(d) {
@@ -967,7 +968,6 @@ function onclickqtlx2(d) {
 function loadqtl(d,qtlselected) {
 
 	focus.attr("visibility", "unhidden");  
-//	context.select("brush").call(brush); 
 	d3.selectAll("text#popup").remove(); 	
 
 	posx = 180,
@@ -1142,8 +1142,6 @@ function mousemovex(d,i){
 	div.text(d.qtl)
 	  .style("left", (180 + i*6)+ "px") 
 	  .style("top",  (y2(d.range.split('-')[1])) + "px"); 
-	  /* .style("left", (150+i*6)+ "px") 
-	  .style("top",  (y2(d.range.split('-')[1])+90) + "px"); */
 }
 
 function mouseoutx() {
@@ -1154,8 +1152,6 @@ function mouseoutx() {
   
 function mouseout(d) {
     svg.classed("active", false);	
-	/*d3.select(this).style("fill", "black") 
-    d3.select(this).style("stroke-width", 20);*/
 }
 
 function moveToFront() {

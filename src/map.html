@@ -2,12 +2,10 @@
 
 <html lang="en">
 
-	<?php include 'header.html'; ?>
 	<link rel="stylesheet" href="map.css" type="text/css" />
-	<style>
-
-	</style>
+  <link rel="stylesheet" href="http://bootswatch.com/cerulean/bootstrap.min.css" type="text/css" />
     <!-- START CONTENT -->
+	<body>
     <section class="container clearfix">
 		<!-- Page Title -->
 			<header class="container page_info clearfix">
@@ -17,8 +15,19 @@
 		<!-- /Page Title -->
 
 		<div class="container">
-			Select Chromosome &nbsp; &nbsp; &nbsp;
-			<SELECT id="selCombo" SIZE=1> 
+      <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+  			<li class="active">
+				</li>
+			</ul>
+			<br/>
+			<form class="form-horizontal">
+				<fieldset>
+				<div class="form-group">
+					<label for="inputEmail" class="col-lg-2 control-label">Select Chromosome</label>
+					<div class="col-lg-2">	
+     
+      <SELECT id="selCombo" onchange="selectFunction();" SIZE=1> 
+     
 				<OPTION VALUE selected ="">--- Select ---</OPTION>
 				<OPTION VALUE="1">CHR 1</OPTION>
 				<OPTION VALUE="2">CHR 2</OPTION>
@@ -33,10 +42,25 @@
 				<OPTION VALUE="11">CHR 11</OPTION> 
 				<OPTION VALUE="12">CHR 12</OPTION> 
 			</SELECT>
-			<br>
-      <a class="button blue" href="#" onclick="chr_select(document.getElementById('selCombo').value,1,'data.csv','data_qtl.csv');">Submit DMap</a>
-      <br>
-      <a class="button blue" href="#" onclick="chr_selectx4(document.getElementById('selCombo').value,1,'datax4.csv','data_qtlx4.csv');">Submit Tetraploid</a>
+			</div>
+  				<div class="col-lg-1"></div>
+					<div class="col-lg-2">
+						<a id="submit1" class="btn btn-primary disabled" href="#" onclick="chr_select(document.getElementById('selCombo').value,1,'data.csv','data_qtl.csv');">Submit Diploid</a>
+
+					</div>
+					<div class="col-lg-2">
+						<a id="submit2" class="btn btn-primary disabled" href="#" onclick="chr_selectx4(document.getElementById('selCombo').value,1,'datax4.csv','data_qtlx4.csv');">Submit Tetraploid</a>
+					</div>
+				</div>
+				</fieldset>				
+	   <script type="text/javascript">
+    		 function selectFunction() {           
+           document.getElementById('submit1').className = "btn btn-primary";     
+           document.getElementById('submit2').className = "btn btn-primary";     
+				};				
+			</script>
+    </form>
+     
 			<script src="http://d3js.org/d3.v3.min.js"></script>
       <!--<script src="d3.js"></script>-->
 			<script src="dmap.js"></script>
