@@ -500,6 +500,12 @@ function chr_selectx4(chr,markervalue,datamarkers,dataqtl){
 					});
 				}
 
+////////////////////
+//
+// helper functions
+//
+////////////////////
+
 function brush(){
 
 	d3.selectAll("text#popup").remove(); 
